@@ -16,8 +16,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
-    //private final static Logger log = LoggerFactory.getLogger(UserController.class);
     private final Map<Long, User> users = new HashMap<>();
 
     @GetMapping
@@ -27,10 +25,7 @@ public class UserController {
 
     @PostMapping
     public User create(@Validated(OnCreate.class) @RequestBody User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-
+        setDefaultNameIfBlank(user);
         user.setId(getNextId());
         users.put(user.getId(), user);
 
@@ -60,9 +55,11 @@ public class UserController {
             oldUser.setBirthday(newUser.getBirthday());
         }
 
-        if (newUser.getName() != null && !newUser.getName().isBlank()) {
+        if (newUser.getName() != null) {
             oldUser.setName(newUser.getName());
         }
+
+        setDefaultNameIfBlank(oldUser);
 
         log.info("Обновлён пользователь: id={}, login={}, email={}",
                 oldUser.getId(), oldUser.getLogin(), oldUser.getEmail());
@@ -76,5 +73,11 @@ public class UserController {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
+    }
+
+    private void setDefaultNameIfBlank(User user) {
+        if(user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
     }
 }
