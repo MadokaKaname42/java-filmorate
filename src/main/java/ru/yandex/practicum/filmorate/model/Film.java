@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import ru.yandex.practicum.filmorate.validation.NotBefore;
 import ru.yandex.practicum.filmorate.validation.groups.OnCreate;
 import ru.yandex.practicum.filmorate.validation.groups.OnUpdate;
 
@@ -18,18 +19,9 @@ public class Film {
     @Size(message = "Описание должно быть не длиннее {max} символов", groups = {OnCreate.class, OnUpdate.class}, max = 200)
     private String description;
 
+    @NotBefore(minData = "1895-12-28", groups = {OnCreate.class, OnCreate.class})
     private LocalDate releaseDate;
 
     @Positive(message = "Длительность не может быть отрицательной", groups = {OnCreate.class, OnUpdate.class})
     private Long duration;
-
-    private boolean releaseDateValid = isReleaseDateValid();
-
-    @AssertTrue(message = "Дата релиза не может быть раньше 28 декабря 1895 года", groups = {OnCreate.class, OnUpdate.class})
-    private boolean isReleaseDateValid() {
-        if (releaseDate == null) {
-            return true;
-        }
-        return !releaseDate.isBefore(LocalDate.of(1895, 12, 28));
-    }
 }

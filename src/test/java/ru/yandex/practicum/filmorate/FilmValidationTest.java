@@ -63,7 +63,7 @@ class FilmValidationTest {
         film.setDuration(100L);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film, OnCreate.class);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("releaseDateValid")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("releaseDate")));
     }
 
     @Test
