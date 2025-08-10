@@ -76,7 +76,7 @@ public class UserController {
     }
 
     private void setDefaultNameIfBlank(User user) {
-        if(user.getName() == null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
     }
