@@ -108,7 +108,7 @@ public class UserValidationTest {
 
         Set<ConstraintViolation<User>> violations = validator.validate(user, OnCreate.class);
         assertFalse(violations.isEmpty());
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("birthdayValid")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("birthday")));
     }
 
     @Test
