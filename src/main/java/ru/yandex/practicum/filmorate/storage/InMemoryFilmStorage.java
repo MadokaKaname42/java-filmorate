@@ -19,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film findById(final long id) {
-        if(!films.containsKey(id)) {
+        if (!films.containsKey(id)) {
             log.error("Попытка получить несуществующий фильм с id {}", id);
             throw new NotFoundException(String.format("Фильм с id %s не найден!", id));
         }

@@ -73,7 +73,7 @@ public class FilmService {
     }
 
     public Collection<Film> findPopularFilm() {
-         return filmStorage.findAll()
+        return filmStorage.findAll()
                 .stream()
                 .sorted(Comparator.comparing(film -> film.getLikes().size()))
                 .toList()
