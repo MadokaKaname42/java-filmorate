@@ -7,9 +7,13 @@ import ru.yandex.practicum.filmorate.validation.groups.OnCreate;
 import ru.yandex.practicum.filmorate.validation.groups.OnUpdate;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
+    private final Set<Long> likes = new HashSet<>();
+
     @NotNull(message = "id обязательно", groups = OnUpdate.class)
     private Long id;
 
