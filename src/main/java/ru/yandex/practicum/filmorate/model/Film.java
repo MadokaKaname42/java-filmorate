@@ -12,20 +12,25 @@ import java.util.Set;
 
 @Data
 public class Film {
-    private final Set<Long> likes = new HashSet<>();
-
-    @NotNull(message = "id обязательно", groups = OnUpdate.class)
+    @NotNull(groups = OnUpdate.class)
     private Long id;
 
-    @NotBlank(message = "Название обязательно", groups = OnCreate.class)
+    @NotBlank(groups = OnCreate.class)
     private String name;
 
-    @Size(message = "Описание должно быть не длиннее {max} символов", groups = {OnCreate.class, OnUpdate.class}, max = 200)
+    @Size(groups = {OnCreate.class, OnUpdate.class}, max = 200)
     private String description;
 
     @NotBefore(minData = "1895-12-28", groups = {OnCreate.class, OnCreate.class})
+    //@NotNull(groups = {OnCreate.class, OnUpdate.class})
     private LocalDate releaseDate;
 
     @Positive(message = "Длительность не может быть отрицательной", groups = {OnCreate.class, OnUpdate.class})
-    private Long duration;
+    private Integer duration;
+
+    private final Set<Long> likes = new HashSet<>();
+
+    private final Set<Genre> genres;
+
+    private final RatingMPA rating;
 }
