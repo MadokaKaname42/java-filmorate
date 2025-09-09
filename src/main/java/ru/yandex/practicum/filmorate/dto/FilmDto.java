@@ -12,10 +12,10 @@ import java.util.Set;
 
 @Data
 public class FilmDto {
-    @NotNull(groups = {OnUpdate.class, OnCreate.class})
+    @NotNull(groups = OnUpdate.class)
     private Long id;
 
-    @NotBlank(groups = OnCreate.class)
+    @NotBlank(groups = {OnCreate.class, OnCreate.class})
     private String name;
 
     @Size(groups = {OnCreate.class, OnUpdate.class}, max = 200)
