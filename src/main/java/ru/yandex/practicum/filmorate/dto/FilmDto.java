@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Data
 public class FilmDto {
-    @NotNull(groups = OnUpdate.class)
+    @NotNull(groups = {OnUpdate.class, OnCreate.class})
     private Long id;
 
     @NotBlank(groups = OnCreate.class)
