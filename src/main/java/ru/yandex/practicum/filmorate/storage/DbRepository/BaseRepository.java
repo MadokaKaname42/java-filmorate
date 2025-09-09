@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.DbRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.exception.InternalServerException;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -31,7 +31,7 @@ public abstract class BaseRepository<T> {
         }
     }
 
-    protected Collection<T> findMany(String query, Object... params) {
+    protected List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
 
