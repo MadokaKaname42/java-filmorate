@@ -6,19 +6,14 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
 import ru.yandex.practicum.filmorate.dto.UserResponse;
-import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
-import ru.yandex.practicum.filmorate.model.Friendship;
-import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.DbRepository.FriendshipDbRepository;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -82,7 +77,7 @@ public class UserService {
         friendshipRepository.removeFriendship(senderId, recipientId);
     }
 
-    public List<UserResponse> getCommonFriends(long userId,long otherId) {
+    public List<UserResponse> getCommonFriends(long userId, long otherId) {
         userStorage.findById(userId).orElseThrow(() -> new NotFoundException(""));
         userStorage.findById(otherId).orElseThrow(() -> new NotFoundException(""));
         List<Long> userFriend = friendshipRepository.getFriends(userId);

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.dto;
 
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -15,26 +14,26 @@ public class UpdateUserRequest {
     private String password;
 
     public boolean hasId() {
-        return ! (email == null);
+        return !(email == null);
     }
 
     public boolean hasEmail() {
-        return ! (email == null || email.isBlank());
+        return !(email == null || email.isBlank());
     }
 
     public boolean hasLogin() {
-        return ! (login == null || login.isBlank());
+        return !(login == null || login.isBlank());
     }
 
     public boolean hasName() {
-        return ! (login == null || login.isBlank());
+        return !(login == null || login.isBlank());
     }
 
     public boolean hasBirthday() {
-        return ! (birthday == null);
+        return !(birthday == null);
     }
 
     public boolean hasPassword() {
-        return ! (password == null || password.isBlank());
+        return !(password == null || password.isBlank());
     }
 }

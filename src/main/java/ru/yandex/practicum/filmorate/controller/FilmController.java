@@ -43,7 +43,7 @@ public class FilmController {
 
     @PutMapping("/{filmId}/like/{userId}")
     public void addLike(@PathVariable Long filmId, @PathVariable Long userId) {
-         filmService.addLike(filmId, userId);
+        filmService.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{filmId}/like/{userId}")

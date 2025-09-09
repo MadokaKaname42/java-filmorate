@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage.mappers;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;

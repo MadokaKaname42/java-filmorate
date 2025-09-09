@@ -10,17 +10,17 @@ import ru.yandex.practicum.filmorate.storage.BaseStorage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Repository
 public class GenreDbRepository extends BaseRepository implements BaseStorage<Genre> {
     private static final String FIND_ALL_QUERY = "SELECT * FROM genres ORDER BY genre_id";
-    private static final String FIND_FILM_QUERY = "SELECT fg.genre_id, g.name FROM genres g JOIN film_genre fg ON g.genre_id = fg.genre_id WHERE fg.film_id = ? ORDER BY g.genre_id";
+    private static final String FIND_FILM_QUERY = "SELECT fg.genre_id, g.name FROM genres g " +
+            "JOIN film_genre fg ON g.genre_id = fg.genre_id WHERE fg.film_id = ? ORDER BY g.genre_id";
     private static final String FIND_GENRE_BY_ID = "SELECT * FROM genres WHERE genre_id = ?";
 
     public GenreDbRepository(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
-        super(jdbc,mapper);
+        super(jdbc, mapper);
     }
 
     @Override

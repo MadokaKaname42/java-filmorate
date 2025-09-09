@@ -26,13 +26,13 @@ public class FilmMapper {
                         .filter(r -> r.getId() == request.getMpa().getId())
                         .findFirst()
                         .orElseThrow(() -> new NotFoundException("Unknown id: " + request.getMpa().getId()))
-            );
+        );
 
         if (request.getGenres() != null && !request.getGenres().isEmpty()) {
             request.getGenres()
                     .stream()
                     .map(GenreMapper::fromDto)
-                            .forEach(g -> film.getGenres().add(g));
+                    .forEach(g -> film.getGenres().add(g));
         } else {
             film.getGenres().clear();
         }
@@ -47,7 +47,7 @@ public class FilmMapper {
         dto.setReleaseDate(film.getReleaseDate());
         dto.setDuration(film.getDuration());
 
-        if(film.getRating() != null) {
+        if (film.getRating() != null) {
             dto.setMpa(new RatingMpaDto(film.getRating().getId(), film.getRating().getDisplayName()));
         }
 
