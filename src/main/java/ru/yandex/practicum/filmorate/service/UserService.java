@@ -28,8 +28,7 @@ public class UserService {
     }
 
     public UserResponse findUserById(long userId) {
-        return UserMapper.mapToUserDto(userStorage.findById(userId).
-                orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId)));
+        return UserMapper.mapToUserDto(userStorage.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId)));
     }
 
     public UserResponse createUser(NewUserRequest request) {
