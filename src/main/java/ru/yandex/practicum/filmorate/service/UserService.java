@@ -3,114 +3,119 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.NewUserRequest;
+import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
+import ru.yandex.practicum.filmorate.dto.UserResponse;
+import ru.yandex.practicum.filmorate.exception.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.model.Friendship;
+import ru.yandex.practicum.filmorate.model.FriendshipStatus;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.DbRepository.FriendshipDbRepository;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
+    private final FriendshipDbRepository friendshipRepository;
 
     public Collection<User> findAll() {
         return userStorage.findAll();
     }
 
-    public User findUser(Long userId) {
-        return userStorage.findById(userId);
+    public UserResponse findUserById(long userId) {
+        return UserMapper.mapToUserDto(userStorage.findById(userId).
+                orElseThrow(() -> new NotFoundException("Пользователь не найден с ID: " + userId)));
     }
 
-    public void create(User user) {
-        setDefaultNameIfBlank(user);
-        user.setId(getNextId());
-        userStorage.save(user);
-
-        log.info("Создан пользователь: id={}, login={}, email={}", user.getId(), user.getLogin(), user.getEmail());
-    }
-
-    public User update(User newUser) {
-        User oldUser = userStorage.findById(newUser.getId());
-
-        if (newUser.getLogin() != null && !newUser.getLogin().isBlank()) {
-            oldUser.setLogin(newUser.getLogin());
+    public UserResponse createUser(NewUserRequest request) {
+        if (request.getName() == null || request.getName().isEmpty()) {
+            request = setDefaultNameIfBlank(request);
         }
 
-        if (newUser.getEmail() != null && !newUser.getEmail().isBlank()) {
-            oldUser.setEmail(newUser.getEmail());
-        }
-
-        if (newUser.getBirthday() != null) {
-            oldUser.setBirthday(newUser.getBirthday());
-        }
-
-        if (newUser.getName() != null) {
-            oldUser.setName(newUser.getName());
-        }
-
-        setDefaultNameIfBlank(oldUser);
-
-        log.info("Обновлён пользователь: id={}, login={}, email={}", oldUser.getId(), oldUser.getLogin(), oldUser.getEmail());
-        return oldUser;
+        return UserMapper.mapToUserDto(userStorage.save(UserMapper.mapToUser(request)));
     }
 
-    public void addFriend(Long userId, Long friendId) {
-        User user = userStorage.findById(userId);
-        User friend = userStorage.findById(friendId);
-
-        if (user.getFriends().contains(friendId)) {
-            log.warn("Пользователь id={} уже добавил в друзья пользователя id={}", userId, friendId);
-        } else {
-            user.getFriends().add(friendId);
-            friend.getFriends().add(userId);
-            log.info("Пользователь id={} добавил в друзья пользователя id={}", userId, friendId);
-        }
+    public UserResponse updateUser(UpdateUserRequest request) {
+        User updatedUser = userStorage.findById(request.getId())
+                .map(user -> UserMapper.updateUserFields(user, request))
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        updatedUser = userStorage.update(updatedUser);
+        log.info("Обновлён пользователь: id={}, login={}, email={}", updatedUser.getId(), updatedUser.getLogin(), updatedUser.getEmail());
+        return UserMapper.mapToUserDto(updatedUser);
     }
 
-    public Collection<User> getFriends(Long userId) {
-        User user = userStorage.findById(userId);
-
-        return user.getFriends()
-                .stream()
-                .map(userStorage::findById)
-                .toList();
-    }
-
-    public Collection<User> getGeneralFriends(Long userId, Long otherId) {
-        User user = userStorage.findById(userId);
-        User other = userStorage.findById(otherId);
-
-        Set<Long> userFriends = user.getFriends();
-        return other.getFriends()
-                .stream()
-                .filter(userFriends::contains)
-                .map(userStorage::findById)
-                .toList();
-    }
-
-    public void deleteFriend(Long userId, Long friendId) {
-        User user = userStorage.findById(userId);
-        User friend = userStorage.findById(friendId);
-
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(userId);
-        log.info("Пользователь id={} удалил из друзей пользователя id={}", userId, friendId);
-    }
-
-    private long getNextId() {
-        long currentMaxId = userStorage.getKeys()
-                .stream()
-                .mapToLong(id -> id)
-                .max().orElse(0);
-        return ++currentMaxId;
-    }
-
-    private void setDefaultNameIfBlank(User user) {
+    private NewUserRequest setDefaultNameIfBlank(NewUserRequest user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-            log.debug("У пользователя id={} установлено имя по умолчанию: {}", user.getId(), user.getName());
+            log.debug("У пользователя установлено имя по умолчанию: {}", user.getName());
+        }
+        return user;
+    }
+
+    public void sendFriendshipRequest(long senderId, long recipientId) {
+        validateFriendshipRequest(senderId, recipientId);
+        friendshipRepository.insertFriendship(senderId, recipientId);
+    }
+
+    public List<UserResponse> getFriends(long userId) {
+        userStorage.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        return friendshipRepository.getFriends(userId)
+                .stream()
+                .map(id -> userStorage.findById(id).orElseThrow(() -> new NotFoundException("Пользователь не найден")))
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
+    }
+
+    public void removeFriendship(long senderId, long recipientId) {
+        userStorage.findById(senderId).orElseThrow(() -> new NotFoundException(""));
+        userStorage.findById(recipientId).orElseThrow(() -> new NotFoundException(""));
+        friendshipRepository.removeFriendship(senderId, recipientId);
+    }
+
+    public List<UserResponse> getCommonFriends(long userId,long otherId) {
+        userStorage.findById(userId).orElseThrow(() -> new NotFoundException(""));
+        userStorage.findById(otherId).orElseThrow(() -> new NotFoundException(""));
+        List<Long> userFriend = friendshipRepository.getFriends(userId);
+        List<Long> otherUserFriends = friendshipRepository.getFriends(otherId);
+
+        return userFriend.stream()
+                .filter(otherUserFriends::contains)
+                .map(id -> userStorage.findById(id).orElseThrow())
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
+    }
+
+    private void validateFriendshipRequest(long senderId, long recepierId) {
+        if (senderId == recepierId) {
+            throw new IllegalArgumentException("Нельзя добавить в друзья самого себя");
+        }
+        userStorage.findById(senderId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + senderId));
+        userStorage.findById(recepierId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден: " + recepierId));
+
+        boolean exists = friendshipRepository.getFriends(senderId)
+                .stream()
+                .anyMatch(existingFriendId -> existingFriendId.equals(recepierId));
+
+        boolean existReverse = friendshipRepository.getFriends(recepierId)
+                .stream()
+                .anyMatch(existingFriendId -> existingFriendId.equals(senderId));
+
+        if (exists || existReverse) {
+            throw new IllegalStateException(
+                    String.format("Дружба между пользователями %d и %d уже существует", senderId, recepierId)
+            );
         }
     }
 }
