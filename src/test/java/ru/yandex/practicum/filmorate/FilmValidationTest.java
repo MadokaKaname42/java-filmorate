@@ -35,13 +35,13 @@ class FilmValidationTest {
     @Test
     void testNameNotBlankOnCreate() {
         Film film = new Film();
-        film.setName(" ");
+        film.setName("");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(100);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film, OnCreate.class);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("title")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name")));
     }
 
     @Test
