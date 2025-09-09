@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     email VARCHAR(40) NOT NULL UNIQUE,
     login VARCHAR(40) NOT NULL UNIQUE,
     name VARCHAR(100),
-    birthday DATE,
-    password VARCHAR(40)
+    birthday DATE
 );
 
 CREATE TABLE IF NOT EXISTS films (
@@ -17,12 +16,12 @@ CREATE TABLE IF NOT EXISTS films (
 );
 
 CREATE TABLE IF NOT EXISTS friendship (
-    user_id BIGINT NOT NULL,
-    friend_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    recipient_id BIGINT NOT NULL,
     status VARCHAR(20),
-    PRIMARY KEY (user_id, friend_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (friend_id) REFERENCES users(user_id)
+    PRIMARY KEY (sender_id, recipient_id),
+    FOREIGN KEY (sender_id) REFERENCES users(user_id),
+    FOREIGN KEY (recipient_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS film_like (
@@ -47,9 +46,9 @@ CREATE TABLE IF NOT EXISTS film_genre (
 );
 
 MERGE INTO genres (genre_id, name) VALUES
-(1, 'Comedy'),
-(2, 'Drama'),
-(3, 'Cartoon'),
-(4, 'Thriller'),
-(5, 'ADocumentary'),
-(6, 'Action_Movie');
+(1, 'Комедия'),
+(2, 'Драма'),
+(3, 'Мультфильм'),
+(4, 'Триллер'),
+(5, 'Документальный'),
+(6, 'Боевик');
