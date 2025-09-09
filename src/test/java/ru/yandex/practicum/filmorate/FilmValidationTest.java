@@ -35,19 +35,19 @@ class FilmValidationTest {
     @Test
     void testNameNotBlankOnCreate() {
         Film film = new Film();
-        film.setName(" ");
+        film.setTitle(" ");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(100L);
 
         Set<ConstraintViolation<Film>> violations = validator.validate(film, OnCreate.class);
-        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name")));
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("title")));
     }
 
     @Test
     void testDescriptionMaxLength() {
         Film film = new Film();
-        film.setName("Имя");
+        film.setTitle("Имя");
         film.setDescription("a".repeat(201)); // 201 символ
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(100L);
@@ -59,7 +59,7 @@ class FilmValidationTest {
     @Test
     void testReleaseDateNotBefore1895() {
         Film film = new Film();
-        film.setName("Имя");
+        film.setTitle("Имя");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
         film.setDuration(100L);
@@ -71,7 +71,7 @@ class FilmValidationTest {
     @Test
     void testDurationPositive() {
         Film film = new Film();
-        film.setName("Имя");
+        film.setTitle("Имя");;
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(0L);
@@ -83,7 +83,7 @@ class FilmValidationTest {
     @Test
     void testValidFilmOnCreate() {
         Film film = new Film();
-        film.setName("Имя");
+        film.setTitle("Имя");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(120L);
@@ -96,7 +96,7 @@ class FilmValidationTest {
     void testIdNotNullOnUpdate() {
         Film film = new Film();
         film.setId(null);
-        film.setName("Имя");
+        film.setTitle("Имя");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(100L);
@@ -109,7 +109,7 @@ class FilmValidationTest {
     void testValidFilmOnUpdate() {
         Film film = new Film();
         film.setId(1L);
-        film.setName("Имя");
+        film.setTitle("Имя");
         film.setDescription("Описание");
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(100L);
