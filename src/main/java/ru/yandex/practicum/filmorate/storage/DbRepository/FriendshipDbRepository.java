@@ -39,7 +39,7 @@ public class FriendshipDbRepository extends BaseRepository {
         );
     }
 
-    public void removeFriendship(long sender_id, long recepient_id) {
-        jdbc.update(DELETE_FRIENDSHIP_QUERY, sender_id, recepient_id, recepient_id, sender_id);
+    public void removeFriendship(long senderId, long recepientId) {
+        jdbc.update(DELETE_FRIENDSHIP_QUERY, senderId, recepientId, recepientId, senderId);
     }
 }
