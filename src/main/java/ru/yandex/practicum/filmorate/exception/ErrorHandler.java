@@ -22,7 +22,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleNotValidException(final NotValidException e) {
+        return new ErrorResponse("Ошибка валидации", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(final Throwable e) {
         return new ErrorResponse("Непредвиденная ошибка", e.getMessage());
     }
