@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage extends BaseStorage<Film> {
     public void addLike(long filmId, long userId);
@@ -12,4 +13,6 @@ public interface FilmStorage extends BaseStorage<Film> {
     public void addGenreFilm(long filmId, long genreId);
 
     public List<Film> getPopularFilms();
+
+    public Optional<Film> findByIdWithGenres(Long id);
 }

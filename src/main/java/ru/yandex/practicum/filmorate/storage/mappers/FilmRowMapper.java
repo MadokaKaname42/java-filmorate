@@ -4,15 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.RatingMPA;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Component
 public class FilmRowMapper implements RowMapper<Film> {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public Film mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Film film = new Film();
@@ -25,7 +31,7 @@ public class FilmRowMapper implements RowMapper<Film> {
         log.info(ratingStr);
         RatingMPA rating = Arrays.stream(RatingMPA.values()).filter(ratingMPA -> ratingStr.equals(ratingMPA.getDisplayName())).findFirst().orElseThrow();
         log.info(rating.getDisplayName());
-        film.setRating(rating);
+
         log.info("Возвращаем фильм");
 
         return film;

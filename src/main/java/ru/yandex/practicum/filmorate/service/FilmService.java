@@ -35,7 +35,7 @@ public class FilmService {
 
     public FilmDto findFilmById(long filmId) {
         log.info("");
-        FilmDto filmDto = FilmMapper.toFilmDto(filmStorage.findById(filmId).orElseThrow(() -> new NotFoundException("Film not found id: " + filmId)));
+        FilmDto filmDto = FilmMapper.toFilmDto(filmStorage.findByIdWithGenres(filmId).orElseThrow(() -> new NotFoundException("Film not found id: " + filmId)));
         filmDto.setGenres(genreStorage.findGenresByFilmID(filmId)
                 .stream()
                 .map(GenreMapper::toDto)
@@ -52,6 +52,8 @@ public class FilmService {
             filmStorage.addGenreFilm(filmFromDb.getId(), genreDto.getId());
             filmFromDb.getGenres().add(GenreMapper.fromDto(genreDto));
         }
+        filmFromDb = filmStorage.findByIdWithGenres(filmFromDb.getId()).orElseThrow();
+
         return FilmMapper.toFilmDto(filmFromDb);
     }
 
