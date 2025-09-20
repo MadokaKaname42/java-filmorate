@@ -5,8 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-@Getter
 @Setter
+@Getter
 public class GenreDto {
     private int id;
     private String name;

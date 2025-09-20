@@ -1,22 +1,22 @@
 package ru.yandex.practicum.filmorate.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validation.NotAfterToday;
-import ru.yandex.practicum.filmorate.validation.groups.OnCreate;
-import ru.yandex.practicum.filmorate.validation.groups.OnUpdate;
 
 import java.time.LocalDate;
 
 @Data
 public class NewUserRequest {
+    @Email
     private String email;
-    @NotNull(message = "логин обязателен при создании", groups = OnCreate.class)
-    @Pattern(regexp = "\\S+", message = "строка не должна содержать пробелов", groups = {OnUpdate.class, OnCreate.class})
+
+    @Pattern(regexp = "\\S+")
     private String login;
+
     private String name;
-    @NotAfterToday(groups = {OnUpdate.class, OnCreate.class})
+
+    @NotAfterToday
     private LocalDate birthday;
-    private String password;
 }

@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-@Getter
 @Setter
-public class RatingMpaDto {
+@Getter
+public class MpaDto {
     private int id;
     private String name;
 }

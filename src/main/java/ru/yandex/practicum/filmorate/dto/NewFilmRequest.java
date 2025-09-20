@@ -1,7 +1,11 @@
 package ru.yandex.practicum.filmorate.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.filmorate.validation.NotBefore;
 import ru.yandex.practicum.filmorate.validation.groups.OnCreate;
 import ru.yandex.practicum.filmorate.validation.groups.OnUpdate;
@@ -10,13 +14,11 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-public class FilmDto {
-    @NotNull(groups = OnUpdate.class)
-    private Long id;
-
+@RequiredArgsConstructor
+@Getter
+public class NewFilmRequest {
     @NotBlank(groups = {OnCreate.class, OnUpdate.class})
-    private String name;
+    private String title;
 
     @Size(groups = {OnCreate.class, OnUpdate.class}, max = 200)
     private String description;
@@ -25,10 +27,10 @@ public class FilmDto {
     @NotNull(groups = {OnCreate.class, OnUpdate.class})
     private LocalDate releaseDate;
 
-    @Positive(message = "Длительность не может быть отрицательной", groups = {OnCreate.class, OnUpdate.class})
+    @Positive(groups = {OnCreate.class, OnUpdate.class})
     private Integer duration;
 
-    private RatingMpaDto mpa;
+    private MpaDto mpa;
 
-    private Set<GenreDto> genres = new HashSet<>();
+    private final Set<GenreDto> genres = new HashSet<>();
 }
