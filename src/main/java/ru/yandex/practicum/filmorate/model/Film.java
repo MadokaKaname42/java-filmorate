@@ -28,7 +28,7 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive(message = "Длительность не может быть отрицательной", groups = {OnCreate.class, OnUpdate.class})
-    private Long duration;
+    private int duration;
 
     private final Set<Long> likes = new HashSet<>();
 
