@@ -10,6 +10,7 @@ public enum Genre {
 
     private int id;
     private String displayName;
+
     Genre(int id, String displayName) {
         this.id = id;
         this.displayName = displayName;
