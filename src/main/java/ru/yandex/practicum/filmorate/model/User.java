@@ -15,16 +15,15 @@ import java.util.Map;
 
 @Data
 public class User {
-    @NotNull(message = "id обязателен при обновлении", groups = OnUpdate.class)
+    @NotNull(groups = OnUpdate.class)
     private Long id;
 
-    @NotBlank(message = "email обязателен при создании", groups = OnCreate.class)
-
+    @NotBlank(groups = OnCreate.class)
     @Email(groups = {OnUpdate.class, OnCreate.class})
     private String email;
 
-    @NotNull(message = "логин обязателен при создании", groups = OnCreate.class)
-    @Pattern(regexp = "\\S+", message = "строка не должна содержать пробелов", groups = {OnUpdate.class, OnCreate.class})
+    @NotNull(groups = OnCreate.class)
+    @Pattern(regexp = "\\S+", groups = {OnUpdate.class, OnCreate.class})
     private String login;
 
     private String name;
