@@ -12,8 +12,6 @@ import java.util.Set;
 
 @Data
 public class Film {
-    private final Set<Long> likes = new HashSet<>();
-
     @NotNull(message = "id обязательно", groups = OnUpdate.class)
     private Long id;
 
@@ -28,4 +26,10 @@ public class Film {
 
     @Positive(message = "Длительность не может быть отрицательной", groups = {OnCreate.class, OnUpdate.class})
     private Long duration;
+
+    private final Set<Long> likes = new HashSet<>();
+
+    private Genre genre;
+
+    private RatingMpa ratingMpa;
 }
