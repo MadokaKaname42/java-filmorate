@@ -1,15 +1,16 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.dto.NewUserRequest;
+import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
+import ru.yandex.practicum.filmorate.dto.UserResponse;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.validation.groups.OnCreate;
-import ru.yandex.practicum.filmorate.validation.groups.OnUpdate;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -19,43 +20,42 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public Collection<User> findAll() {
+    public List<UserResponse> findAll() {
         return userService.findAll();
     }
 
+    @PostMapping
+    public UserResponse create(@Valid @RequestBody NewUserRequest userRequest) {
+        return userService.create(userRequest);
+    }
+
     @GetMapping("/{userId}")
-    public User findUser(@PathVariable Long userId) {
+    public UserResponse findUser(@PathVariable Long userId) {
         return userService.findUser(userId);
     }
 
-    @PostMapping
-    public User create(@Validated(OnCreate.class) @RequestBody User user) {
-        userService.create(user);
-
-        log.info("Создан пользователь: id={}, login={}, email={}",
-                user.getId(), user.getLogin(), user.getEmail());
-        return user;
-    }
-
     @PutMapping
-    public User update(@Validated(OnUpdate.class) @RequestBody User newUser) {
-        return userService.update(newUser);
+    public UserResponse update(@Valid @RequestBody UpdateUserRequest userRequest) {
+        return userService.update(userRequest);
     }
 
-    @PutMapping("/{userId}/friends/{friendId}")
-    public void addFriend(@PathVariable Long userId, @PathVariable Long friendId) {
-        userService.addFriend(userId, friendId);
+    @PutMapping("/{senderId}/friends/{receiverId}")
+    public List<Long> addFriend(@PathVariable Long senderId, @PathVariable Long receiverId) {
+        userService.addFriend(senderId, receiverId);
+        List<Long> response = new ArrayList<>();
+        response.add(receiverId);
+        return response;
     }
 
     @GetMapping("/{userId}/friends")
-    public Collection<User> getFriends(@PathVariable Long userId) {
+    public List<UserResponse> getFriends(@PathVariable Long userId) {
         return userService.getFriends(userId);
     }
 
     @GetMapping("/{userId}/friends/common/{otherId}")
-    public Collection<User> getGeneralFriends(@PathVariable Long userId, @PathVariable Long otherId) {
+    public List<UserResponse> getCommonFriends(@PathVariable Long userId, @PathVariable Long otherId) {
 
-        return userService.getGeneralFriends(userId, otherId);
+        return userService.getCommonFriends(userId, otherId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")

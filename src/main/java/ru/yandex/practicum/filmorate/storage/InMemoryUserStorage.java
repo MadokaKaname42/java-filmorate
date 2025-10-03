@@ -13,17 +13,22 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
-    public void save(User user) {
-        users.put(user.getId(), user);
+    public User save(User user) {
+        return users.put(user.getId(), user);
     }
 
     @Override
-    public User findById(long id) {
+    public User update(User entity) {
+        return null;
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
         if (!users.containsKey(id)) {
             log.error("Попытка получить пользователя с id {}", id);
             throw new NotFoundException(String.format("Пользователь с id %s не найден!", id));
         }
-        return users.get(id);
+        return Optional.of(users.get(id));
     }
 
     @Override
@@ -32,12 +37,27 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteById(long id) {
+    public void deleteById(Long id) {
         users.remove(id);
     }
 
     @Override
-    public Set<Long> getKeys() {
-        return users.keySet();
+    public Optional<User> findByEmail(String email) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void insertFriendship(Long sender_id, Long receiver_id) {
+
+    }
+
+    @Override
+    public void updateFriendship(Long sender_id, Long receiver_id, boolean confirmed) {
+
+    }
+
+    @Override
+    public boolean containsFriendship(Long sender_id, Long receiver_id, Boolean filterConfirmed) {
+        return false;
     }
 }

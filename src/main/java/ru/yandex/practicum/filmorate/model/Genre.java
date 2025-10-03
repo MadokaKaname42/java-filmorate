@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.model;
 
 public enum Genre {
-    COMEDY(0, "Комедия"),
-    DRAMA(1, "Драма"),
-    CARTOON(2, "Мультфильм"),
-    THRILLER(3, "Триллер"),
-    DOCUMENTARY(4, "Документальный"),
-    ACTION(5, "Боевик");
+    COMEDY(1, "Комедия"),
+    DRAMA(2, "Драма"),
+    CARTOON(3, "Мультфильм"),
+    THRILLER(4, "Триллер"),
+    DOCUMENTARY(5, "Документальный"),
+    ACTION(6, "Боевик");
 
     private int id;
     private String displayName;
