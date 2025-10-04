@@ -1,23 +1,23 @@
-package ru.yandex.practicum.filmorate.dto.mapper;
+package ru.yandex.practicum.filmorate.mapper;
 
 import ru.yandex.practicum.filmorate.dto.NewUserRequest;
 import ru.yandex.practicum.filmorate.dto.UpdateUserRequest;
-import ru.yandex.practicum.filmorate.dto.UserResponse;
+import ru.yandex.practicum.filmorate.dto.UserDto;
 import ru.yandex.practicum.filmorate.model.User;
 
 public class UserMapper {
-    public static User updateUserFields(NewUserRequest userRequest) {
+    public static User mapToUser(NewUserRequest request) {
         User user = new User();
-        user.setEmail(userRequest.getEmail());
-        user.setLogin(userRequest.getLogin());
-        user.setName(userRequest.getName());
-        user.setBirthday(userRequest.getBirthday());
+        user.setEmail(request.getEmail());
+        user.setLogin(request.getLogin());
+        user.setName(request.getName());
+        user.setBirthday(request.getBirthday());
         setDefaultNameIfBlank(user);
         return user;
     }
 
-    public static UserResponse toUserResponse(User user) {
-        UserResponse userDto = new UserResponse();
+    public static UserDto mapToUserDto(User user) {
+        UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
         userDto.setLogin(user.getLogin());
@@ -28,19 +28,16 @@ public class UserMapper {
     }
 
     public static User updateUserFields(User user, UpdateUserRequest userRequest) {
-        if (userRequest.getLogin() != null && !userRequest.getLogin().isBlank()) {
-            user.setLogin(userRequest.getLogin());
-        }
-
-        if (userRequest.getEmail() != null && !userRequest.getEmail().isBlank()) {
+        if (userRequest.hasEmail()) {
             user.setEmail(userRequest.getEmail());
         }
-
-        if (userRequest.getBirthday() != null) {
+        if (userRequest.hasLogin()) {
+            user.setLogin(userRequest.getLogin());
+        }
+        if (userRequest.hasBirthday()) {
             user.setBirthday(userRequest.getBirthday());
         }
-
-        if (userRequest.getName() != null) {
+        if (userRequest.hasName()) {
             user.setName(userRequest.getName());
         } else {
             setDefaultNameIfBlank(user);
